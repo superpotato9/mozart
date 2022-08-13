@@ -3,7 +3,9 @@ import os
 import numpy as np
 import os
 import time
-path_to_file = 'train.txt'
+import timeit
+from datetime import datetime
+path_to_file = '/home/nathan/PycharmProject/glyrics/train.txt'
 
 # Read, then decode for py2 compat.
 text = open(path_to_file, 'rb').read().decode(encoding='utf-8')
@@ -47,7 +49,7 @@ for input_example, target_example in dataset.take(1):
     print("Input :", text_from_ids(input_example).numpy())
     print("Target:", text_from_ids(target_example).numpy())
 # Batch size
-BATCH_SIZE = 64
+BATCH_SIZE = 64 #todo here
 
 # Buffer size to shuffle the dataset
 # (TF data is designed to work with possibly infinite sequences,
@@ -67,7 +69,7 @@ vocab_size = len(ids_from_chars.get_vocabulary())
 embedding_dim = 256
 
 # Number of RNN units
-rnn_units = 750 # 1024
+rnn_units = 1024
 
 class MyModel(tf.keras.Model):
   def __init__(self, vocab_size, embedding_dim, rnn_units):
@@ -123,7 +125,7 @@ example_batch_mean_loss = loss(target_example_batch, example_batch_predictions)
 print("Prediction shape: ", example_batch_predictions.shape, " # (batch_size, sequence_length, vocab_size)")
 print("Mean loss:        ", example_batch_mean_loss)
 
-model.compile(optimizer='adam', loss=loss)
+model.compile(optimizer='adam', loss=loss  ,metrics=['accuracy'])
 
 
 checkpoint_dir = './training_checkpoints'
@@ -139,7 +141,7 @@ EPOCHS = int(input('how many epochs'))  # int(input("how many epoches: "))
 history = model.fit(dataset, epochs=EPOCHS, callbacks=[checkpoint_callback])
 
 class OneStep(tf.keras.Model):
-  def __init__(self, model, chars_from_ids, ids_from_chars, temperature=1.0):
+  def __init__(self, model, chars_from_ids, ids_from_chars, temperature=1 ): #used to be 1
     super().__init__()
     self.temperature = temperature
     self.model = model
@@ -183,13 +185,23 @@ class OneStep(tf.keras.Model):
     return predicted_chars, states
 
 
+
+
+
+
+
+
 one_step_model = OneStep(model, chars_from_ids, ids_from_chars)
 
+
+
+# print(m.result().numpy())
 start = time.time()
 states = None
 tf.saved_model.save(one_step_model, 'one_step')
-next_char = tf.constant(['weakened'])
+next_char = tf.constant(['a'])
 result = [next_char]
+
 
 for n in range(1000):
   next_char, states = one_step_model.generate_one_step(next_char, states=states)

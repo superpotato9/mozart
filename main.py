@@ -1,10 +1,10 @@
-with open('data.txt', "r") as input:
-    for item in input.readlines():
-        print(item)
-        with open('song-titles.txt', 'r+' ) as output:
-            if item not in output.readlines():
-                output.write(item)
-
+final = []
+with open('train.txt', 'r+') as file:
+    for line in file.readlines():
+        if ' - ' not in line:
+            final.append(line)
+for i in final:
+    print(i)
 
 
 
