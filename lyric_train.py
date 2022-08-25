@@ -14,7 +14,7 @@ print(f'Length of text: {len(text)} characters')
 print(text[:250])
 vocab = sorted(set(text))
 print(f'{len(vocab)} unique characters')
-example_texts = ['abcdefg', 'xyz']
+example_texts = ['the same', 'i']
 
 chars = tf.strings.unicode_split(example_texts, input_encoding='UTF-8')
 ids_from_chars = tf.keras.layers.StringLookup(
@@ -53,7 +53,7 @@ BATCH_SIZE = 64 #todo here
 
 # Buffer size to shuffle the dataset
 # (TF data is designed to work with possibly infinite sequences,
-# so it doesn't attempt to shuffle the entire sequence in memory. Instead,
+# so it doesn't attempt to shuffle  the entire sequence in memory. Instead,
 # it maintains a buffer in which it shuffles elements).
 BUFFER_SIZE = 10000
 
@@ -136,7 +136,7 @@ checkpoint_callback = tf.keras.callbacks.ModelCheckpoint(
     filepath=checkpoint_prefix,
     save_weights_only=True)
 
-EPOCHS = int(input('how many epochs'))  # int(input("how many epoches: "))
+EPOCHS = int(input('how many epochs'))
 
 history = model.fit(dataset, epochs=EPOCHS, callbacks=[checkpoint_callback])
 
